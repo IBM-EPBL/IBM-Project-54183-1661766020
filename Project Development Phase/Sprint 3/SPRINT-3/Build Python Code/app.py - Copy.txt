@@ -1,0 +1,31 @@
+import pickle
+
+import numpy as np
+import pandas as pd
+from flask import Flask, render_template, request
+
+
+app = Flask(__name__)
+model = pickle.load(open("rfmodel.pkl",'rb'))
+
+@app.route("/",methods=['GET'])
+def Home():
+    return render_template('index.html')
+
+
+@app.route("/predict",methods=['POST'])
+def predict():
+    month = int(request.form['month']
+    dayofmonth = int(request.form['dayofmonth'])
+    dayofweek = int(request.form['dayofweek'])
+    origin = int(request.form['origin'])
+    destination = int(request.form['dest'])
+    depature_time = int(request.form['deptime'])
+
+    X =[[month, dayofmonth, dayofweek, origin, destination, depature_time]]
+    prediction = model.predict(X)
+
+    return render_template('index.html',prediction_text=prediction[0])
+
+if__name__=="__main__":
+    app.run(debug=True)
